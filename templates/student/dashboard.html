@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Inicio Estudiante{% endblock %}
+{% block page_title %}Mi Panel{% endblock %}
+{% block content %}
+<div style="background:linear-gradient(135deg,#4F46E5,#06B6D4);border-radius:14px;padding:28px 32px;color:#fff;margin-bottom:20px;position:relative;overflow:hidden">
+  <div style="position:absolute;right:-10px;top:-10px;font-size:110px;opacity:.07">🎓</div>
+  <div style="font-size:22px;font-weight:800;margin-bottom:4px">¡Hola, {{ current_user.email.split('@')[0]|title }}! 👋</div>
+  <div style="opacity:.85;font-size:13px">Completa tus encuestas pendientes y ayuda a mejorar la calidad educativa.</div>
+</div>
+
+<!-- Encuestas pendientes -->
+<div class="card" style="margin-bottom:16px">
+  <div style="padding:16px 20px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between">
+    <div style="font-size:14px;font-weight:700">📋 Encuestas Pendientes</div>
+    <span id="pending-count" class="badge badge-warning">Cargando...</span>
+  </div>
+  <div id="encuestas-pendientes" style="padding:16px 20px">
+    <div style="text-align:center;padding:24px;color:#94A3B8">Cargando...</div>
+  </div>
+</div>
+
+<!-- Encuestas completadas recientes -->
+<div class="card">
+  <div style="padding:16px 20px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between">
+    <div style="font-size:14px;font-weight:700">✅ Completadas Recientemente</div>
+    <a href="/student/mis-encuestas" class="btn btn-ghost btn-sm">Ver todas →</a>
+  </div>
+  <div style="padding:16px 20px">
+    <table class="data-table">
+      <thead><tr><th>Fecha</th><th>Curso</th><th>Docente</th><th>Nivelación</th><th>Riesgo</th></tr></thead>
+      <tbody id="completadas-body"><tr><td colspan="5" style="text-align:center;padding:20px;color:#94A3B8">Cargando...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function loadStudentHome() {
+  const surveys = await fetch('/api/v1/student/encuestas-activas').then(r=>r.json()).catch(()=>({surveys:[]}));
+  const hist    = await fetch('/api/v1/student/historial?limit=5').then(r=>r.json()).catch(()=>({rows:[]}));
+  
+  const pending = surveys.surveys || [];
+  document.getElementById('pending-count').textContent = pending.length + ' pendiente' + (pending.length!==1?'s':'');
+  document.getElementById('pending-count').className = 'badge ' + (pending.length>0?'badge-warning':'badge-success');
+
+  const pDiv = document.getElementById('encuestas-pendientes');
+  if (!pending.length) {
+    pDiv.innerHTML = '<div style="text-align:center;padding:24px;color:#10B981;font-weight:600">✅ No tienes encuestas pendientes por ahora.</div>';
+  } else {
+    pDiv.innerHTML = pending.map(s => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;margin-bottom:10px">
+        <div>
+          <div style="font-weight:700;font-size:14px">${s.titulo}</div>
+          <div style="font-size:12px;color:#64748B;margin-top:2px">👨‍🏫 ${s.docente} · 📚 ${s.curso}</div>
+        </div>
+        <a href="/survey/${s.codigo_qr}" class="btn btn-primary btn-sm"><i class="fas fa-play"></i> Responder</a>
+      </div>`).join('');
+  }
+
+  const rows = hist.rows || [];
+  const rmap = {bajo:'badge-success',medio:'badge-warning',alto:'badge-danger'};
+  const tbody = document.getElementById('completadas-body');
+  tbody.innerHTML = rows.length ? rows.map(r=>`<tr>
+    <td>${new Date(r.fecha).toLocaleDateString('es-PE')}</td>
+    <td>${r.curso||'—'}</td>
+    <td>${r.docente||'—'}</td>
+    <td style="font-weight:700;color:#4F46E5">${((r.indice_nivelacion||0)*100).toFixed(0)}%</td>
+    <td><span class="badge ${rmap[r.riesgo_insatisfaccion]||'badge-neutral'}">${r.riesgo_insatisfaccion||'—'}</span></td>
+  </tr>`).join('') : '<tr><td colspan="5" style="text-align:center;padding:20px;color:#94A3B8">Aún no has respondido ninguna encuesta.</td></tr>';
+}
+document.addEventListener('DOMContentLoaded', loadStudentHome);
+</script>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Cursos{% endblock %}
+{% block page_title %}Gestión de Cursos{% endblock %}
+{% block topbar_actions %}
+  <button class="btn btn-primary btn-sm" onclick="document.getElementById('cursoModal').style.display='flex'"><i class="fas fa-plus"></i> Nuevo Curso</button>
+{% endblock %}
+{% block content %}
+<div class="card">
+  <div style="padding:14px 18px;border-bottom:1px solid #E2E8F0;font-size:13px;font-weight:700">Cursos registrados</div>
+  <div style="padding:14px 18px">
+    <table class="data-table">
+      <thead><tr><th>Código</th><th>Nombre</th><th>Carrera</th><th>Créditos</th><th>Encuestas</th></tr></thead>
+      <tbody id="cursos-body"><tr><td colspan="5" style="text-align:center;padding:24px;color:#94A3B8">Cargando...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="cursoModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;width:440px;padding:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div style="font-size:15px;font-weight:700">Nuevo Curso</div>
+      <button onclick="document.getElementById('cursoModal').style.display='none'" style="background:none;border:none;cursor:pointer;font-size:18px;color:#94A3B8">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">Código</label><input type="text" id="c-codigo" class="form-control" placeholder="CS102"></div>
+    <div class="form-group"><label class="form-label">Nombre del curso</label><input type="text" id="c-nombre" class="form-control" placeholder="Estructuras de Datos Avanzadas"></div>
+    <div class="form-group"><label class="form-label">Carrera</label><input type="text" id="c-carrera" class="form-control" placeholder="Ingeniería de Sistemas"></div>
+    <div class="form-group"><label class="form-label">Créditos</label><input type="number" id="c-creditos" class="form-control" value="4" min="1" max="10"></div>
+    <div id="curso-error" style="font-size:12px;color:#EF4444;display:none;margin-bottom:10px"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button onclick="document.getElementById('cursoModal').style.display='none'" class="btn btn-outline">Cancelar</button>
+      <button onclick="crearCurso()" class="btn btn-primary"><i class="fas fa-plus"></i> Crear</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/admin.js"></script>
+<script>document.addEventListener('DOMContentLoaded', loadCursos);</script>
+{% endblock %}

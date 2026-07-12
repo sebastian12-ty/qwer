@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Mi Historial{% endblock %}
+{% block page_title %}Mi Historial de Encuestas{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-header-clean flex items-center justify-between">
+    <span>Todas mis respuestas</span>
+    <div class="flex gap-8">
+      <input type="text" id="searchInput" class="form-control" style="width:200px" placeholder="Buscar curso...">
+      <select id="filterRiesgo" class="form-control" style="width:140px">
+        <option value="">Todos los riesgos</option>
+        <option value="bajo">🟢 Bajo</option>
+        <option value="medio">🟡 Medio</option>
+        <option value="alto">🔴 Alto</option>
+      </select>
+    </div>
+  </div>
+  <div class="card-body-pad" style="padding-top:12px">
+    <table class="data-table" id="historialTable">
+      <thead>
+        <tr>
+          <th>Fecha</th><th>Curso</th><th>Docente</th>
+          <th>Calidad</th><th>Comprensión</th><th>Nivelación</th>
+          <th>Emoción</th><th>Sentimiento</th><th>Riesgo</th><th>Detalle</th>
+        </tr>
+      </thead>
+      <tbody id="historialBody">
+        <tr><td colspan="10" style="text-align:center;padding:32px;color:#94A3B8">Cargando historial...</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="padding:14px 20px;border-top:1px solid #E2E8F0;display:flex;justify-content:space-between;align-items:center">
+    <span id="historial-count" style="font-size:12px;color:#64748B"></span>
+    <div class="flex gap-8" id="paginacion"></div>
+  </div>
+</div>
+
+<!-- Modal detalle -->
+<div id="detalleModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;width:560px;max-height:85vh;overflow-y:auto;padding:28px">
+    <div class="flex items-center justify-between" style="margin-bottom:20px">
+      <h3 style="font-size:16px;font-weight:700">Detalle de Respuesta</h3>
+      <button onclick="closeModal()" class="btn btn-ghost btn-sm"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="detalleContent"></div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/historial.js"></script>
+{% endblock %}

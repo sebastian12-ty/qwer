@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block page_title %}Panel de Administración{% endblock %}
+{% block topbar_actions %}
+  <a href="/api/v1/export/csv" class="btn btn-outline btn-sm"><i class="fas fa-download"></i> Exportar CSV</a>
+  <button class="btn btn-primary btn-sm" onclick="showCrearUsuario()"><i class="fas fa-user-plus"></i> Nuevo Usuario</button>
+{% endblock %}
+{% block content %}
+
+<!-- Stats -->
+<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px">
+  <div class="card" style="padding:16px;text-align:center"><div style="font-size:22px;font-weight:800;color:#4F46E5" id="a-users">—</div><div style="font-size:11px;color:#64748B;margin-top:2px">Usuarios</div></div>
+  <div class="card" style="padding:16px;text-align:center"><div style="font-size:22px;font-weight:800;color:#10B981" id="a-surveys">—</div><div style="font-size:11px;color:#64748B;margin-top:2px">Encuestas</div></div>
+  <div class="card" style="padding:16px;text-align:center"><div style="font-size:22px;font-weight:800;color:#F59E0B" id="a-responses">—</div><div style="font-size:11px;color:#64748B;margin-top:2px">Respuestas</div></div>
+  <div class="card" style="padding:16px;text-align:center"><div style="font-size:22px;font-weight:800;color:#06B6D4" id="a-students">—</div><div style="font-size:11px;color:#64748B;margin-top:2px">Estudiantes</div></div>
+  <div class="card" style="padding:16px;text-align:center"><div style="font-size:22px;font-weight:800;color:#8B5CF6" id="a-teachers">—</div><div style="font-size:11px;color:#64748B;margin-top:2px">Docentes</div></div>
+  <div class="card" style="padding:16px;text-align:center"><div style="font-size:22px;font-weight:800;color:#EF4444" id="a-captures">—</div><div style="font-size:11px;color:#64748B;margin-top:2px">Capturas IA</div></div>
+</div>
+
+<!-- Looker Studio -->
+<div class="card" style="margin-bottom:20px">
+  <div style="padding:16px 20px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:32px;height:32px;background:#4285F4;border-radius:8px;display:flex;align-items:center;justify-content:center"><i class="fas fa-chart-bar" style="color:#fff;font-size:14px"></i></div>
+      <div><div style="font-size:14px;font-weight:700">Dashboard Global del Sistema</div><div style="font-size:11px;color:#64748B">Google Looker Studio</div></div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span id="status-admin" style="font-size:11px;color:#64748B"></span>
+      <a id="open-admin" href="#" target="_blank" class="btn btn-outline btn-sm" style="display:none"><i class="fas fa-external-link-alt"></i> Abrir</a>
+      <button class="btn btn-ghost btn-sm" onclick="showModal('admin')"><i class="fas fa-cog"></i></button>
+    </div>
+  </div>
+  <div id="container-admin" style="position:relative;min-height:600px;background:#F8FAFC">
+    <div id="placeholder-admin" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:600px;text-align:center;padding:40px">
+      <div style="width:64px;height:64px;background:#FEE2E2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:16px"><i class="fas fa-database" style="font-size:26px;color:#DC2626"></i></div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:8px">Dashboard Administrativo Global</div>
+      <div style="font-size:13px;color:#64748B;max-width:400px;margin-bottom:20px">Conecta el reporte de Looker Studio con todos los KPIs, tendencias y alertas del sistema completo.</div>
+      <button onclick="showModal('admin')" class="btn btn-primary"><i class="fas fa-link"></i> Conectar Looker Studio</button>
+    </div>
+    <iframe id="iframe-admin" src="https://datastudio.google.com/embed/reporting/98aeb76e-40a6-4ca8-a0ad-b4ea73647052/page/k6b2F" style="display:block;width:100%;height:600px;border:none" allowfullscreen sandbox="allow-scripts allow-same-origin allow-popups allow-forms" onload="iframeOk('admin')" onerror="iframeErr('admin')"></iframe>
+  </div>
+</div>
+
+<!-- Gestión usuarios + encuestas -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+  <div class="card">
+    <div style="padding:14px 18px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:13px;font-weight:700">Usuarios del Sistema</div>
+      <button class="btn btn-primary btn-sm" onclick="showCrearUsuario()"><i class="fas fa-plus"></i> Agregar</button>
+    </div>
+    <div style="padding:14px 18px">
+      <table class="data-table">
+        <thead><tr><th>Email</th><th>Rol</th><th>Estado</th><th></th></tr></thead>
+        <tbody id="usersBody"><tr><td colspan="4" style="text-align:center;padding:20px;color:#94A3B8">Cargando...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div style="padding:14px 18px;border-bottom:1px solid #E2E8F0;font-size:13px;font-weight:700">Encuestas Registradas</div>
+    <div style="padding:14px 18px">
+      <table class="data-table">
+        <thead><tr><th>Título</th><th>Código</th><th>Activa</th><th></th></tr></thead>
+        <tbody id="surveysBody"><tr><td colspan="4" style="text-align:center;padding:20px;color:#94A3B8">Cargando...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal nuevo usuario -->
+<div id="userModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;width:440px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div style="font-size:15px;font-weight:700">Crear nuevo usuario</div>
+      <button onclick="document.getElementById('userModal').style.display='none'" style="background:none;border:none;cursor:pointer;color:#94A3B8;font-size:18px">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">Email</label><input type="email" id="new-email" class="form-control" placeholder="usuario@universidad.edu"></div>
+    <div class="form-group"><label class="form-label">Contraseña</label><input type="password" id="new-password" class="form-control" placeholder="mínimo 8 caracteres"></div>
+    <div class="form-group">
+      <label class="form-label">Rol</label>
+      <select id="new-role" class="form-control">
+        <option value="student">Estudiante</option>
+        <option value="teacher">Docente</option>
+        <option value="coordinator">Coordinador</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button onclick="document.getElementById('userModal').style.display='none'" class="btn btn-outline">Cancelar</button>
+      <button onclick="crearUsuario()" class="btn btn-primary"><i class="fas fa-user-plus"></i> Crear</button>
+    </div>
+    <div id="user-error" style="margin-top:10px;font-size:12px;color:#EF4444;display:none"></div>
+  </div>
+</div>
+
+{% include '_looker_modal.html' %}
+<script src="/static/js/looker.js"></script>
+<script src="/static/js/admin.js"></script>
+<script>
+function showCrearUsuario() { document.getElementById('userModal').style.display='flex'; }
+async function crearUsuario() {
+  const email = document.getElementById('new-email').value.trim();
+  const password = document.getElementById('new-password').value;
+  const role = document.getElementById('new-role').value;
+  const errEl = document.getElementById('user-error');
+  errEl.style.display = 'none';
+  if (!email || !password) { errEl.textContent='Completa todos los campos.'; errEl.style.display='block'; return; }
+  const data = await fetch('/api/v1/admin/users', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ email, password, role })
+  }).then(r=>r.json()).catch(()=>({error:'Error de red'}));
+  if (data.error) { errEl.textContent=data.error; errEl.style.display='block'; return; }
+  document.getElementById('userModal').style.display='none';
+  loadAdmin();
+}
+document.addEventListener('DOMContentLoaded', () => { loadAdmin(); autoload('admin'); });
+</script>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Mis Alumnos{% endblock %}
+{% block page_title %}Mis Alumnos{% endblock %}
+{% block content %}
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+  <div class="card" style="padding:18px;text-align:center"><div style="font-size:24px;font-weight:800;color:#4F46E5" id="t-total">—</div><div style="font-size:11px;color:#64748B;margin-top:3px">Respuestas totales</div></div>
+  <div class="card" style="padding:18px;text-align:center"><div style="font-size:24px;font-weight:800;color:#EF4444" id="t-riesgo">—</div><div style="font-size:11px;color:#64748B;margin-top:3px">En riesgo alto</div></div>
+  <div class="card" style="padding:18px;text-align:center"><div style="font-size:24px;font-weight:800;color:#10B981" id="t-niv">—</div><div style="font-size:11px;color:#64748B;margin-top:3px">Nivelación promedio</div></div>
+</div>
+<div class="card">
+  <div style="padding:14px 18px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;gap:12px">
+    <div style="font-size:13px;font-weight:700;flex:1">Respuestas de Alumnos</div>
+    <input type="text" id="searchAlumno" class="form-control" style="width:200px" placeholder="Buscar alumno...">
+    <select id="filterRisk" class="form-control" style="width:140px">
+      <option value="">Todo riesgo</option>
+      <option value="alto">🔴 Alto</option>
+      <option value="medio">🟡 Medio</option>
+      <option value="bajo">🟢 Bajo</option>
+    </select>
+  </div>
+  <div style="padding:14px 18px">
+    <table class="data-table">
+      <thead><tr><th>Alumno</th><th>Curso</th><th>Fecha</th><th>Comprensión</th><th>Nivelación</th><th>Emoción</th><th>Sentimiento</th><th>Riesgo</th></tr></thead>
+      <tbody id="alumnos-body"><tr><td colspan="8" style="text-align:center;padding:24px;color:#94A3B8">Cargando...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+let allRows=[];
+const rmap={bajo:'badge-success',medio:'badge-warning',alto:'badge-danger'};
+const smap={positivo:'badge-success',negativo:'badge-danger',neutral:'badge-neutral'};
+const em={feliz:'😊',neutral:'😐',triste:'😢',enojado:'😠',sorprendido:'😲'};
+
+async function load(){
+  const [data,riesgo,kpis]=await Promise.all([
+    fetch('/api/v1/student/historial?limit=200').then(r=>r.json()).catch(()=>({rows:[]})),
+    fetch('/api/v1/kpis/riesgo').then(r=>r.json()).catch(()=>({})),
+    fetch('/api/v1/kpis/general').then(r=>r.json()).catch(()=>({})),
+  ]);
+  allRows=data.rows||[];
+  document.getElementById('t-total').textContent=allRows.length;
+  document.getElementById('t-riesgo').textContent=riesgo.alto||0;
+  document.getElementById('t-niv').textContent=kpis.nivelacion?(kpis.nivelacion*100).toFixed(1)+'%':'—';
+  render(allRows);
+}
+function render(rows){
+  const tbody=document.getElementById('alumnos-body');
+  tbody.innerHTML=rows.length?rows.map(r=>`<tr>
+    <td style="font-weight:600">${r.estudiante||r.docente||'Alumno'}</td>
+    <td>${r.curso||'—'}</td>
+    <td style="font-size:12px">${new Date(r.fecha).toLocaleDateString('es-PE')}</td>
+    <td style="font-weight:700">${((r.indice_comprension||0)*100).toFixed(0)}%</td>
+    <td style="font-weight:700;color:#4F46E5">${((r.indice_nivelacion||0)*100).toFixed(0)}%</td>
+    <td>${em[r.emocion_predominante]||'—'} ${r.emocion_predominante||'—'}</td>
+    <td><span class="badge ${smap[r.sentimiento_label]||'badge-neutral'}">${r.sentimiento_label||'—'}</span></td>
+    <td><span class="badge ${rmap[r.riesgo_insatisfaccion]||'badge-neutral'}">${r.riesgo_insatisfaccion||'—'}</span></td>
+  </tr>`).join(''):'<tr><td colspan="8" style="text-align:center;padding:24px;color:#94A3B8">Sin datos</td></tr>';
+}
+document.getElementById('searchAlumno').addEventListener('input',function(){
+  const q=this.value.toLowerCase(),r=document.getElementById('filterRisk').value;
+  render(allRows.filter(x=>(!q||(x.estudiante||'').toLowerCase().includes(q)||
+    (x.curso||'').toLowerCase().includes(q))&&(!r||x.riesgo_insatisfaccion===r)));
+});
+document.getElementById('filterRisk').addEventListener('change',function(){
+  document.getElementById('searchAlumno').dispatchEvent(new Event('input'));
+});
+document.addEventListener('DOMContentLoaded',load);
+</script>
+{% endblock %}

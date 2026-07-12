@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Gestión de Usuarios{% endblock %}
+{% block page_title %}Gestión de Usuarios{% endblock %}
+{% block topbar_actions %}
+  <button class="btn btn-primary btn-sm" onclick="document.getElementById('userModal').style.display='flex'"><i class="fas fa-user-plus"></i> Nuevo Usuario</button>
+{% endblock %}
+{% block content %}
+<div class="card">
+  <div style="padding:14px 18px;border-bottom:1px solid #E2E8F0;display:flex;gap:10px">
+    <input type="text" id="searchUser" class="form-control" style="width:220px" placeholder="Buscar email...">
+    <select id="filterRole" class="form-control" style="width:140px">
+      <option value="">Todos los roles</option>
+      <option value="student">Estudiante</option>
+      <option value="teacher">Docente</option>
+      <option value="coordinator">Coordinador</option>
+      <option value="admin">Admin</option>
+    </select>
+  </div>
+  <div style="padding:14px 18px">
+    <table class="data-table">
+      <thead><tr><th>Email</th><th>Rol</th><th>Estado</th><th>Creado</th><th>Acciones</th></tr></thead>
+      <tbody id="usersBody"><tr><td colspan="5" style="text-align:center;padding:24px;color:#94A3B8">Cargando...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="userModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;width:440px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div style="font-size:15px;font-weight:700">Crear usuario</div>
+      <button onclick="document.getElementById('userModal').style.display='none'" style="background:none;border:none;cursor:pointer;color:#94A3B8;font-size:18px">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">Email</label><input type="email" id="new-email" class="form-control" placeholder="usuario@universidad.edu"></div>
+    <div class="form-group"><label class="form-label">Contraseña</label><input type="password" id="new-password" class="form-control" placeholder="mínimo 8 caracteres"></div>
+    <div class="form-group">
+      <label class="form-label">Rol</label>
+      <select id="new-role" class="form-control">
+        <option value="student">Estudiante</option>
+        <option value="teacher">Docente</option>
+        <option value="coordinator">Coordinador</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+    <div id="user-error" style="font-size:12px;color:#EF4444;display:none;margin-bottom:10px"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button onclick="document.getElementById('userModal').style.display='none'" class="btn btn-outline">Cancelar</button>
+      <button onclick="crearUsuario()" class="btn btn-primary"><i class="fas fa-user-plus"></i> Crear</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/admin.js"></script>
+<script>
+function showCrearUsuario(){document.getElementById('userModal').style.display='flex';}
+document.addEventListener('DOMContentLoaded',loadAdminUsers);
+</script>
+{% endblock %}

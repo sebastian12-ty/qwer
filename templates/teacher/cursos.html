@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Mis Cursos{% endblock %}
+{% block page_title %}Mis Cursos{% endblock %}
+{% block topbar_actions %}
+  <a href="/teacher/nueva-encuesta" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Nueva Encuesta</a>
+{% endblock %}
+{% block content %}
+<div id="cursos-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px">
+  <div style="text-align:center;padding:40px;color:#94A3B8;grid-column:1/-1">Cargando cursos...</div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function loadCursos(){
+  const data=await fetch('/api/v1/teacher/encuestas').then(r=>r.json()).catch(()=>({surveys:[]}));
+  const surveys=data.surveys||[];
+  // Agrupar por curso
+  const cursos={};
+  surveys.forEach(s=>{
+    const k=s.curso||s.titulo;
+    if(!cursos[k]) cursos[k]={nombre:k,encuestas:[],total_resp:0,niv_sum:0};
+    cursos[k].encuestas.push(s);
+    cursos[k].total_resp+=s.respuestas||0;
+    if(s.nivelacion_prom) cursos[k].niv_sum+=(s.nivelacion_prom||0);
+  });
+  const grid=document.getElementById('cursos-grid');
+  const vals=Object.values(cursos);
+  if(!vals.length){grid.innerHTML='<div style="text-align:center;padding:40px;color:#94A3B8;grid-column:1/-1">Sin cursos asignados aún.</div>';return;}
+  grid.innerHTML=vals.map(c=>{
+    const niv=c.encuestas.length?(c.niv_sum/c.encuestas.length*100).toFixed(1):null;
+    const color=niv>=70?'#10B981':niv>=50?'#F59E0B':'#EF4444';
+    return `<div class="card" style="padding:20px">
+      <div style="font-size:16px;font-weight:800;margin-bottom:4px">📚 ${c.nombre}</div>
+      <div style="font-size:12px;color:#64748B;margin-bottom:16px">${c.encuestas.length} encuesta${c.encuestas.length!==1?'s':''} · ${c.total_resp} respuestas</div>
+      ${niv?`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:#64748B">Nivelación</span><span style="font-weight:800;color:${color}">${niv}%</span></div>
+      <div style="background:#F1F5F9;border-radius:4px;height:6px"><div style="background:${color};height:6px;border-radius:4px;width:${niv}%"></div></div>`:''}
+      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+        ${c.encuestas.slice(0,3).map(s=>`<a href="/survey/${s.codigo_qr}" target="_blank" class="btn btn-outline btn-sm"><i class="fas fa-external-link-alt"></i> ${s.codigo_qr}</a>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+document.addEventListener('DOMContentLoaded',loadCursos);
+</script>
+{% endblock %}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduSatisface — Iniciar Sesión</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+<div class="login-page">
+  <div class="login-left">
+    <h1>Plataforma BI con IA para la Satisfacción Estudiantil</h1>
+    <p>Mide, analiza y mejora la experiencia académica con inteligencia artificial, análisis facial y procesamiento de lenguaje natural.</p>
+    <div class="login-feature"><div class="login-feature-icon"><i class="fas fa-camera"></i></div><span>Análisis emocional en tiempo real con DeepFace</span></div>
+    <div class="login-feature"><div class="login-feature-icon"><i class="fas fa-brain"></i></div><span>NLP multilingüe con análisis de sentimiento</span></div>
+    <div class="login-feature"><div class="login-feature-icon"><i class="fas fa-chart-line"></i></div><span>KPIs de nivelación, atención y comprensión</span></div>
+    <div class="login-feature"><div class="login-feature-icon"><i class="fas fa-shield-alt"></i></div><span>IA Ética: privacidad y consentimiento primero</span></div>
+  </div>
+  <div class="login-right">
+    <div class="login-box">
+      <div style="margin-bottom:28px">
+        <div style="font-size:28px;margin-bottom:6px">🎓</div>
+        <h2>Bienvenido</h2>
+        <p class="sub">Ingresa tus credenciales para continuar</p>
+      </div>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for cat, msg in messages %}
+          <div style="background:#FEE2E2;color:#991B1B;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px;">⚠️ {{ msg }}</div>
+        {% endfor %}
+      {% endwith %}
+      <form method="POST" action="/auth/login">
+        <div class="form-group">
+          <label class="form-label">Correo electrónico</label>
+          <div class="input-icon-wrap">
+            <i class="fas fa-envelope"></i>
+            <input type="email" name="email" class="form-control" placeholder="usuario@universidad.edu" required autofocus>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <div class="input-icon-wrap">
+            <i class="fas fa-lock"></i>
+            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg w-full" style="margin-top:8px">
+          <i class="fas fa-sign-in-alt"></i> Ingresar
+        </button>
+      </form>
+      <hr class="divider">
+      <div style="background:#F8FAFC;border-radius:10px;padding:14px;font-size:12px;color:#64748B;">
+        <div style="font-weight:600;margin-bottom:8px;color:#0F172A">Cuentas de prueba</div>
+        <div style="display:grid;gap:4px">
+          <div>👨‍🎓 <b>estudiante@uni.edu</b> / student123</div>
+          <div>👨‍🏫 <b>docente@uni.edu</b> / docente123</div>
+          <div>🔧 <b>admin@uni.edu</b> / admin123</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:16px;font-size:12px;color:#94A3B8">
+        ¿Tienes código QR? <a href="/survey/DEMO01" style="color:#4F46E5;font-weight:600">Ir a encuesta →</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Mi Perfil IA{% endblock %}
+{% block page_title %}Mi Perfil de Aprendizaje IA{% endblock %}
+{% block content %}
+<div style="display:grid;grid-template-columns:1fr 2fr;gap:16px;margin-bottom:20px">
+  <!-- Tarjeta perfil -->
+  <div class="card" style="padding:28px;text-align:center">
+    <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#4F46E5,#06B6D4);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;margin:0 auto 16px">
+      {{ current_user.email[0].upper() }}
+    </div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px">{{ current_user.email.split('@')[0]|title }}</div>
+    <div class="badge badge-primary" style="margin-bottom:16px">Estudiante</div>
+    <hr class="divider">
+    <div style="font-size:12px;color:#64748B;margin-bottom:8px;font-weight:600">PERFIL EMOCIONAL PREDOMINANTE</div>
+    <div id="emocion-predominante-perfil" style="font-size:32px;margin-bottom:8px">—</div>
+    <div id="emocion-label-perfil" style="font-size:13px;font-weight:600;color:#0F172A">Cargando...</div>
+    <hr class="divider">
+    <div style="font-size:12px;color:#64748B;font-weight:600;margin-bottom:8px">RIESGO ACADÉMICO</div>
+    <div id="riesgo-perfil"></div>
+  </div>
+
+  <!-- Radar chart + análisis IA -->
+  <div style="display:flex;flex-direction:column;gap:16px">
+    <div class="card">
+      <div class="card-header-clean">Radar de Competencias</div>
+      <div class="card-body-pad"><canvas id="radarChart" height="220"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header-clean flex items-center justify-between">
+        <span>Análisis IA Personalizado</span>
+        <span class="badge badge-info"><i class="fas fa-robot"></i> IA</span>
+      </div>
+      <div class="card-body-pad" id="ia-analisis" style="font-size:13px;line-height:1.7;color:#334155">
+        Cargando análisis...
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tendencia temporal -->
+<div class="card">
+  <div class="card-header-clean">Evolución Académica en el Tiempo</div>
+  <div class="card-body-pad"><canvas id="tendenciaChart" height="160"></canvas></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/perfil.js"></script>
+{% endblock %}

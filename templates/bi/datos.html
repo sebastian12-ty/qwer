@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Datos — E2E-BI{% endblock %}
+{% block page_title %}Centro de Datos E2E-BI{% endblock %}
+{% block topbar_actions %}
+  <a href="/bi/pipeline" class="btn btn-outline btn-sm"><i class="fas fa-sitemap"></i> Ver Pipeline</a>
+{% endblock %}
+{% block content %}
+
+<!-- Resumen de archivos -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+  <div class="card" style="padding:18px;text-align:center"><div style="font-size:22px;font-weight:800;color:#4F46E5">36,441+</div><div style="font-size:11px;color:#64748B;margin-top:3px">Registros totales</div></div>
+  <div class="card" style="padding:18px;text-align:center"><div style="font-size:22px;font-weight:800;color:#10B981">7</div><div style="font-size:11px;color:#64748B;margin-top:3px">Archivos CSV</div></div>
+  <div class="card" style="padding:18px;text-align:center"><div style="font-size:22px;font-weight:800;color:#F59E0B">5,200</div><div style="font-size:11px;color:#64748B;margin-top:3px">Respuestas Fact</div></div>
+  <div class="card" style="padding:18px;text-align:center"><div style="font-size:22px;font-weight:800;color:#06B6D4">26,041</div><div style="font-size:11px;color:#64748B;margin-top:3px">Capturas IoT</div></div>
+</div>
+
+<!-- Tabla de archivos -->
+<div class="card" style="margin-bottom:16px">
+  <div style="padding:16px 20px;border-bottom:1px solid #E2E8F0;font-size:14px;font-weight:700">Archivos CSV por Paso E2E-BI</div>
+  <div style="padding:16px 20px">
+    <table class="data-table">
+      <thead><tr><th>Paso</th><th>Archivo</th><th>Descripción</th><th>Registros</th><th>Uso en Looker</th><th>Descargar</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span style="background:#EEF2FF;color:#4F46E5;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700">1 — Fuentes</span></td>
+          <td><code style="font-size:11px">paso1_fuentes_estudiantes.csv</code></td>
+          <td style="font-size:12px;color:#64748B">Dim_Estudiante con carrera y semestre</td>
+          <td>500</td>
+          <td style="font-size:12px">Filtro por carrera/semestre</td>
+          <td><a href="/bi/download/1" class="btn btn-ghost btn-sm"><i class="fas fa-download"></i></a></td>
+        </tr>
+        <tr>
+          <td><span style="background:#ECFEFF;color:#06B6D4;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700">2 — IoT</span></td>
+          <td><code style="font-size:11px">paso2_iot_capturas.csv</code></td>
+          <td style="font-size:12px;color:#64748B">Capturas emocionales por frame</td>
+          <td>26,041</td>
+          <td style="font-size:12px">Gráficas de emoción en tiempo</td>
+          <td><a href="/bi/download/2" class="btn btn-ghost btn-sm"><i class="fas fa-download"></i></a></td>
+        </tr>
+        <tr>
+          <td><span style="background:#ECFDF5;color:#10B981;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700">3 — ETL</span></td>
+          <td><code style="font-size:11px">paso3_etl_respuestas.csv</code></td>
+          <td style="font-size:12px;color:#64748B">Respuestas normalizadas y limpias</td>
+          <td>5,200</td>
+          <td style="font-size:12px">Análisis de sentimiento y calidad</td>
+          <td><a href="/bi/download/3" class="btn btn-ghost btn-sm"><i class="fas fa-download"></i></a></td>
+        </tr>
+        <tr>
+          <td><span style="background:#FFFBEB;color:#F59E0B;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700">4 — DW</span></td>
+          <td><code style="font-size:11px">paso4_fact_satisfaccion.csv</code></td>
+          <td style="font-size:12px;color:#64748B">Fact table con todas las dimensiones</td>
+          <td>5,200</td>
+          <td style="font-size:12px">Tabla central del modelo estrella</td>
+          <td><a href="/bi/download/4" class="btn btn-ghost btn-sm"><i class="fas fa-download"></i></a></td>
+        </tr>
+        <tr>
+          <td><span style="background:#F5F3FF;color:#8B5CF6;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700">5 — IA</span></td>
+          <td><code style="font-size:11px">paso5_ia_resultados.csv</code></td>
+          <td style="font-size:12px;color:#64748B">Predicciones de riesgo y recomendaciones</td>
+          <td>5,200</td>
+          <td style="font-size:12px">Mapa de riesgo académico</td>
+          <td><a href="/bi/download/5" class="btn btn-ghost btn-sm"><i class="fas fa-download"></i></a></td>
+        </tr>
+        <tr>
+          <td><span style="background:#FFF1F2;color:#EF4444;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700">6 — KPIs</span></td>
+          <td><code style="font-size:11px">paso6_kpis_semanticos.csv</code></td>
+          <td style="font-size:12px;color:#64748B">KPIs agregados por carrera</td>
+          <td>8</td>
+          <td style="font-size:12px">Scorecards y comparativas</td>
+          <td><a href="/bi/download/6" class="btn btn-ghost btn-sm"><i class="fas fa-download"></i></a></td>
+        </tr>
+        <tr style="background:#EFF6FF">
+          <td><span style="background:#DBEAFE;color:#1D4ED8;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700">7 — Looker ⭐</span></td>
+          <td><code style="font-size:11px">paso7_looker_dataset_maestro.csv</code></td>
+          <td style="font-size:12px;color:#1D4ED8;font-weight:600">Dataset principal para Looker Studio (sube este)</td>
+          <td><b>5,200</b></td>
+          <td style="font-size:12px;color:#1D4ED8;font-weight:600">⭐ Fuente principal de datos</td>
+          <td><a href="/bi/download/7" class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Descargar</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Instrucciones Looker -->
+<div class="card" style="padding:24px">
+  <div style="font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px">
+    <div style="width:28px;height:28px;background:#4285F4;border-radius:8px;display:flex;align-items:center;justify-content:center"><i class="fas fa-chart-bar" style="color:#fff;font-size:12px"></i></div>
+    Cómo conectar a Google Looker Studio
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+    {% for step in [
+      {'n':1,'icon':'fas fa-download','color':'#4F46E5','title':'Descarga el CSV','desc':'Descarga <b>paso7_looker_dataset_maestro.csv</b> — contiene 5,200 registros con todas las dimensiones.'},
+      {'n':2,'icon':'fas fa-upload','color':'#10B981','title':'Sube a Looker','desc':'En <b>lookerstudio.google.com</b>, crea un reporte → Agregar datos → Cargar archivo → sube el CSV.'},
+      {'n':3,'icon':'fas fa-chart-pie','color':'#F59E0B','title':'Crea visualizaciones','desc':'Usa los campos <b>indice_nivelacion</b>, <b>riesgo_insatisfaccion</b>, <b>emocion_predominante</b>, <b>carrera</b>.'},
+      {'n':4,'icon':'fas fa-link','color':'#4285F4','title':'Pega el enlace','desc':'Comparte el reporte y pega el enlace en cualquier dashboard de EduSatisface para verlo embebido.'},
+    ] %}
+    <div style="padding:16px;background:#F8FAFC;border-radius:12px;border:1px solid #E2E8F0">
+      <div style="width:36px;height:36px;background:{{ step.color }};border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px">
+        <i class="{{ step.icon }}" style="color:#fff;font-size:14px"></i>
+      </div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:6px">{{ step.n }}. {{ step.title }}</div>
+      <div style="font-size:12px;color:#64748B;line-height:1.6">{{ step.desc|safe }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function loadStats() {
+  const [stats, resumen] = await Promise.all([
+    fetch('/bi/stats').then(r=>r.json()).catch(()=>({})),
+    fetch('/bi/resumen').then(r=>r.json()).catch(()=>({})),
+  ]);
+  // Update stat cards if elements exist
+  const map = {
+    'stat-total':    resumen.total_respuestas,
+    'stat-students': resumen.total_estudiantes,
+    'stat-iot':      resumen.total_capturas_iot,
+    'stat-kpi-niv':  resumen.kpi_nivelacion_prom ? (resumen.kpi_nivelacion_prom*100).toFixed(1)+'%' : '—',
+  };
+  Object.entries(map).forEach(([id,val]) => {
+    const el = document.getElementById(id);
+    if (el && val != null) el.textContent = val;
+  });
+}
+document.addEventListener('DOMContentLoaded', loadStats);
+</script>
+{% endblock %}

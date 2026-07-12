@@ -1,0 +1,12 @@
+# Opcional — SOLO para desarrollo local con IA facial/NLP reales.
+# No instalar en Render/Streamlit Cloud: superan la RAM y el tiempo de build
+# de los planes gratuitos. El código ya funciona sin esto (modo fallback).
+#
+# pip install -r requirements-ml.txt
+
+opencv-python==4.9.0.80
+deepface==0.0.92
+tf-keras==2.16.0
+transformers==4.40.0
+torch==2.2.0
+nltk==3.8.1

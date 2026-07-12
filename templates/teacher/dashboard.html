@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Docente{% endblock %}
+{% block page_title %}Mi Dashboard{% endblock %}
+{% block topbar_actions %}
+  <a href="/teacher/nueva-encuesta" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Nueva Encuesta</a>
+{% endblock %}
+{% block content %}
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+  <div class="kpi-card indigo"><div class="kpi-icon indigo"><i class="fas fa-users"></i></div><div class="kpi-value" id="kpi-alumnos">—</div><div class="kpi-label">Alumnos activos</div></div>
+  <div class="kpi-card emerald"><div class="kpi-icon emerald"><i class="fas fa-book"></i></div><div class="kpi-value" id="kpi-cursos">—</div><div class="kpi-label">Cursos asignados</div></div>
+  <div class="kpi-card cyan"><div class="kpi-icon cyan"><i class="fas fa-clipboard-list"></i></div><div class="kpi-value" id="kpi-encuestas">—</div><div class="kpi-label">Encuestas creadas</div></div>
+  <div class="kpi-card amber"><div class="kpi-icon amber"><i class="fas fa-chart-line"></i></div><div class="kpi-value" id="kpi-nivel">—</div><div class="kpi-label">Nivelación promedio</div></div>
+</div>
+
+<div class="card" style="margin-bottom:16px">
+  <div style="padding:16px 20px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between">
+    <div style="font-size:14px;font-weight:700">Mis Encuestas Activas</div>
+    <a href="/teacher/clases" class="btn btn-ghost btn-sm">Ver resultados →</a>
+  </div>
+  <div style="padding:16px 20px">
+    <div id="enc-activas" style="display:flex;gap:10px;flex-wrap:wrap"></div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="padding:16px 20px;border-bottom:1px solid #E2E8F0;font-size:14px;font-weight:700">Looker Studio — Mis Resultados</div>
+  <div id="container-teacher" style="min-height:500px;background:#F8FAFC;position:relative">
+    <div id="placeholder-teacher" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:500px;text-align:center;padding:32px">
+      <div style="font-size:36px;margin-bottom:12px">📊</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:8px">Conecta tu Looker Studio</div>
+      <div style="font-size:13px;color:#64748B;max-width:360px;margin-bottom:20px">Pega el enlace de tu reporte para ver los resultados de tus clases.</div>
+      <button onclick="showModal('teacher')" class="btn btn-primary"><i class="fas fa-link"></i> Conectar Looker Studio</button>
+    </div>
+    <iframe id="iframe-teacher" style="display:none;width:100%;height:500px;border:none" allowfullscreen sandbox="allow-scripts allow-same-origin allow-popups allow-forms" onload="iframeOk('teacher')" onerror="iframeErr('teacher')"></iframe>
+  </div>
+</div>
+{% include '_looker_modal.html' %}
+<script src="/static/js/looker.js"></script>
+<script src="/static/js/teacher_dashboard.js"></script>
+<script>document.addEventListener('DOMContentLoaded',()=>autoload('teacher'));</script>
+{% endblock %}

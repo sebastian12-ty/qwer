@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}Pipeline E2E-BI — 7 Pasos{% endblock %}
+{% block page_title %}Pipeline E2E-BI — 7 Capas{% endblock %}
+{% block topbar_actions %}
+  <a href="/bi/datos" class="btn btn-outline btn-sm"><i class="fas fa-table"></i> Ver Datos</a>
+  <a href="/api/v1/export/csv" class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Exportar CSV</a>
+{% endblock %}
+{% block content %}
+
+<!-- Barra de 7 pasos -->
+<div class="card" style="margin-bottom:20px;padding:20px 24px">
+  <div style="font-size:13px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px">Arquitectura E2E-BI con IA</div>
+  <div style="display:flex;align-items:center;gap:0;overflow-x:auto;padding-bottom:4px" id="stepBar">
+
+    {% set pasos = [
+      {'n':1,'icon':'fas fa-database','label':'Fuentes','sub':'Encuestas · Cámara · RRSS · SGA','color':'#4F46E5','bg':'#EEF2FF'},
+      {'n':2,'icon':'fas fa-camera','label':'IoT / Captura','sub':'Webcam · OpenCV · DeepFace','color':'#06B6D4','bg':'#ECFEFF'},
+      {'n':3,'icon':'fas fa-exchange-alt','label':'ETL','sub':'Extracción · Transformación · Limpieza','color':'#10B981','bg':'#ECFDF5'},
+      {'n':4,'icon':'fas fa-warehouse','label':'Data Warehouse','sub':'Estrella · Fact · Dims','color':'#F59E0B','bg':'#FFFBEB'},
+      {'n':5,'icon':'fas fa-brain','label':'IA','sub':'Facial · NLP · Árbol · Riesgo','color':'#8B5CF6','bg':'#F5F3FF'},
+      {'n':6,'icon':'fas fa-layer-group','label':'Semántica','sub':'KPIs · Indicadores · Métricas','color':'#EF4444','bg':'#FFF1F2'},
+      {'n':7,'icon':'fas fa-chart-bar','label':'Visualización','sub':'Looker Studio · Dashboards','color':'#4285F4','bg':'#EFF6FF'},
+    ] %}
+
+    {% for p in pasos %}
+    <div style="display:flex;align-items:center;flex-shrink:0">
+      <div class="e2e-step {% if loop.first %}active{% endif %}" data-step="{{ p.n }}"
+           onclick="selectStep({{ p.n }})"
+           style="--c:{{ p.color }};--bg:{{ p.bg }};cursor:pointer;padding:12px 16px;border-radius:10px;border:2px solid transparent;transition:all .2s;min-width:130px;text-align:center">
+        <div style="width:36px;height:36px;background:{{ p.bg }};border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px">
+          <i class="{{ p.icon }}" style="color:{{ p.color }};font-size:15px"></i>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:#0F172A">{{ p.label }}</div>
+        <div style="font-size:10px;color:#64748B;margin-top:2px;line-height:1.3">{{ p.sub }}</div>
+        <div style="width:24px;height:24px;border-radius:50%;background:{{ p.color }};color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:8px auto 0">{{ p.n }}</div>
+      </div>
+      {% if not loop.last %}
+      <div style="flex-shrink:0;padding:0 4px;color:#CBD5E1;font-size:18px">→</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Detalle del paso seleccionado -->
+<div id="stepDetail"></div>
+
+<!-- Looker Studio embed -->
+<div class="card" style="margin-top:16px">
+  <div style="padding:16px 20px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:32px;height:32px;background:#4285F4;border-radius:8px;display:flex;align-items:center;justify-content:center">
+        <i class="fas fa-chart-bar" style="color:#fff;font-size:14px"></i>
+      </div>
+      <div>
+        <div style="font-size:14px;font-weight:700">Dashboard E2E-BI — Google Looker Studio</div>
+        <div style="font-size:11px;color:#64748B">Sube <b>paso7_looker_dataset_maestro.csv</b> como fuente de datos</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span id="status-bi" style="font-size:11px;color:#64748B"></span>
+      <a id="open-bi" href="#" target="_blank" class="btn btn-outline btn-sm" style="display:none"><i class="fas fa-external-link-alt"></i> Abrir</a>
+      <button class="btn btn-ghost btn-sm" onclick="showModal('bi')"><i class="fas fa-cog"></i></button>
+    </div>
+  </div>
+  <div id="container-bi" style="min-height:700px;background:#F8FAFC;position:relative">
+    <div id="placeholder-bi" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:700px;text-align:center;padding:40px">
+      <div style="font-size:48px;margin-bottom:16px">📊</div>
+      <div style="font-size:17px;font-weight:700;margin-bottom:8px">Dashboard E2E-BI de 7 Capas</div>
+      <div style="font-size:13px;color:#64748B;max-width:500px;line-height:1.7;margin-bottom:24px">
+        Descarga los CSVs generados, súbelos a Looker Studio como fuente y pega el enlace aquí.
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:540px;margin-bottom:24px;text-align:left">
+        {% for p in pasos %}
+        <a href="/bi/download/{{ p.n }}" class="btn btn-outline btn-sm" style="justify-content:flex-start">
+          <i class="{{ p.icon }}" style="color:{{ p.color }}"></i> Paso {{ p.n }} — {{ p.label }}
+        </a>
+        {% endfor %}
+      </div>
+      <button onclick="showModal('bi')" class="btn btn-primary btn-lg"><i class="fas fa-link"></i> Conectar Looker Studio</button>
+    </div>
+    <iframe id="iframe-bi" style="display:none;width:100%;height:700px;border:none"
+      allowfullscreen sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+      onload="iframeOk('bi')" onerror="iframeErr('bi')"></iframe>
+  </div>
+</div>
+
+{% include '_looker_modal.html' %}
+<script src="/static/js/looker.js"></script>
+<script>
+const STEP_DATA = {
+  1: { title:'Fuentes de Datos', color:'#4F46E5',
+       desc:'Origen de toda la información del sistema. Incluye encuestas web, capturas de cámara, redes sociales y el sistema académico.',
+       items:['Encuestas Web (respuestas directas)', 'Cámara inteligente (IoT)', 'Comentarios abiertos', 'Sistema de Gestión Académica'],
+       csv:'paso1_fuentes_estudiantes.csv', registros:'500 estudiantes + 10 docentes + 30 encuestas' },
+  2: { title:'Captura IoT', color:'#06B6D4',
+       desc:'La webcam captura imágenes cada 6-8 segundos. OpenCV detecta cara, ojos y sonrisa. DeepFace analiza las 5 emociones.',
+       items:['Detección de rostro con Haar Cascades','Análisis emocional con DeepFace','Tracking de ojos y sonrisa','Metadatos de atención'],
+       csv:'paso2_iot_capturas.csv', registros:'26,041 capturas emocionales' },
+  3: { title:'ETL — Extracción, Transformación, Carga', color:'#10B981',
+       desc:'Los datos crudos se limpian, normalizan y enriquecen. Se eliminan outliers y se calculan campos derivados.',
+       items:['Normalización de escalas (1-5 → 0-1)','Eliminación de respuestas incompletas','Cálculo de campos derivados','Integración de fuentes'],
+       csv:'paso3_etl_respuestas.csv', registros:'5,200 respuestas limpias' },
+  4: { title:'Data Warehouse — Modelo Estrella', color:'#F59E0B',
+       desc:'Almacenamiento estructurado en modelo estrella. Fact_Satisfaccion centraliza todas las métricas con dimensiones de análisis.',
+       items:['Fact_Satisfaccion (tabla central)','Dim_Estudiante','Dim_Docente','Dim_Tiempo','Dim_Curso'],
+       csv:'paso4_fact_satisfaccion.csv', registros:'5,200 filas en Fact_Satisfaccion' },
+  5: { title:'Inteligencia Artificial', color:'#8B5CF6',
+       desc:'Tres modelos de IA procesan los datos: análisis facial (DeepFace), NLP (BERT multilingüe) y predicción de riesgo (árbol de decisión).',
+       items:['DeepFace: emociones con 97%+ precisión','BERT multilingüe: sentimiento NLP','Árbol de Decisión: predicción de riesgo','Índice de Nivelación Académica'],
+       csv:'paso5_ia_resultados.csv', registros:'5,200 predicciones IA' },
+  6: { title:'Capa Semántica — KPIs', color:'#EF4444',
+       desc:'Agregaciones y KPIs calculados por carrera, docente y período. Listos para consumo en dashboards.',
+       items:['Índice de Satisfacción General','Índice de Comprensión de Clase','Índice de Nivelación Académica','Tasa de Riesgo Crítico','Brecha de Satisfacción por Fuente'],
+       csv:'paso6_kpis_semanticos.csv', registros:'8 KPIs por carrera (64 métricas)' },
+  7: { title:'Visualización — Looker Studio', color:'#4285F4',
+       desc:'Dataset maestro listo para Looker Studio con todos los campos del modelo estrella desnormalizado para fácil análisis.',
+       items:['Dataset maestro (todas las dimensiones)','Campos calculados listos','Filtros por carrera, docente, período','Compatible con Google Looker Studio'],
+       csv:'paso7_looker_dataset_maestro.csv', registros:'5,200 filas · 32 columnas · listo para Looker' },
+};
+
+function selectStep(n) {
+  document.querySelectorAll('.e2e-step').forEach(el => {
+    const sn = parseInt(el.dataset.step);
+    el.style.border = sn===n ? `2px solid ${STEP_DATA[sn].color}` : '2px solid transparent';
+    el.style.background = sn===n ? STEP_DATA[sn].color.replace(')', ',0.08)').replace('rgb','rgba') : '';
+  });
+  const d = STEP_DATA[n];
+  document.getElementById('stepDetail').innerHTML = `
+    <div class="card" style="padding:24px;border-left:4px solid ${d.color};margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px">
+        <div>
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:${d.color};margin-bottom:4px">PASO ${n} DE 7</div>
+          <div style="font-size:17px;font-weight:800">${d.title}</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="background:#F1F5F9;padding:4px 10px;border-radius:20px;font-size:11px;color:#64748B"><i class="fas fa-database"></i> ${d.registros}</span>
+          <a href="/bi/download/${n}" class="btn btn-sm" style="background:${d.color};color:#fff"><i class="fas fa-download"></i> Descargar ${d.csv}</a>
+        </div>
+      </div>
+      <p style="font-size:13px;color:#475569;line-height:1.6;margin-bottom:14px">${d.desc}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        ${d.items.map(i=>`<span style="background:#F8FAFC;border:1px solid #E2E8F0;padding:5px 12px;border-radius:20px;font-size:12px;color:#475569"><i class="fas fa-check" style="color:${d.color};margin-right:4px"></i>${i}</span>`).join('')}
+      </div>
+    </div>`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  selectStep(1);
+  autoload('bi');
+});
+</script>
+{% endblock %}

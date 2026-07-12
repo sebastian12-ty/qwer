@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Mis Encuestas{% endblock %}
+{% block page_title %}Mis Encuestas{% endblock %}
+{% block content %}
+<div class="card">
+  <div style="padding:16px 20px;border-bottom:1px solid #E2E8F0;font-size:14px;font-weight:700">Historial completo de respuestas</div>
+  <div style="padding:16px 20px">
+    <table class="data-table">
+      <thead><tr><th>Fecha</th><th>Curso</th><th>Docente</th><th>Calidad</th><th>Comprensión</th><th>Nivelación</th><th>Emoción</th><th>Riesgo</th><th>Detalle</th></tr></thead>
+      <tbody id="hist-body"><tr><td colspan="9" style="text-align:center;padding:24px;color:#94A3B8">Cargando...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/historial.js"></script>
+{% endblock %}

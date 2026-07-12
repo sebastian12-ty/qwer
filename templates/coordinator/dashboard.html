@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Coordinador{% endblock %}
+{% block page_title %}Dashboard Coordinador{% endblock %}
+{% block topbar_actions %}
+  <a href="/api/v1/export/csv" class="btn btn-outline btn-sm"><i class="fas fa-download"></i> Exportar CSV</a>
+{% endblock %}
+{% block content %}
+
+<!-- KPI rápidos -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+  <div class="card" style="padding:20px;text-align:center">
+    <div style="font-size:26px;font-weight:800;color:#4F46E5" id="k-total">—</div>
+    <div style="font-size:11px;color:#64748B;margin-top:4px">Respuestas totales</div>
+  </div>
+  <div class="card" style="padding:20px;text-align:center">
+    <div style="font-size:26px;font-weight:800;color:#10B981" id="k-niv">—</div>
+    <div style="font-size:11px;color:#64748B;margin-top:4px">Nivelación promedio</div>
+  </div>
+  <div class="card" style="padding:20px;text-align:center">
+    <div style="font-size:26px;font-weight:800;color:#06B6D4" id="k-comp">—</div>
+    <div style="font-size:11px;color:#64748B;margin-top:4px">Comprensión promedio</div>
+  </div>
+  <div class="card" style="padding:20px;text-align:center">
+    <div style="font-size:26px;font-weight:800;color:#EF4444" id="k-riesgo-alto">—</div>
+    <div style="font-size:11px;color:#64748B;margin-top:4px">En riesgo alto</div>
+  </div>
+</div>
+
+<!-- Looker Studio -->
+<div class="card">
+  <div style="padding:16px 20px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:32px;height:32px;background:#4285F4;border-radius:8px;display:flex;align-items:center;justify-content:center"><i class="fas fa-chart-pie" style="color:#fff;font-size:14px"></i></div>
+      <div>
+        <div style="font-size:14px;font-weight:700">Reporte por Carrera y Docente</div>
+        <div style="font-size:11px;color:#64748B">Google Looker Studio</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span id="status-coordinator" style="font-size:11px;color:#64748B"></span>
+      <a id="open-coordinator" href="#" target="_blank" class="btn btn-outline btn-sm" style="display:none"><i class="fas fa-external-link-alt"></i> Abrir</a>
+      <button class="btn btn-ghost btn-sm" onclick="showModal('coordinator')"><i class="fas fa-cog"></i></button>
+    </div>
+  </div>
+  <div id="container-coordinator" style="position:relative;min-height:680px;background:#F8FAFC">
+    <div id="placeholder-coordinator" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:680px;text-align:center;padding:40px">
+      <div style="width:64px;height:64px;background:#FEF3C7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:16px">
+        <i class="fas fa-users-cog" style="font-size:26px;color:#D97706"></i>
+      </div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:8px">Panel de Coordinación</div>
+      <div style="font-size:13px;color:#64748B;max-width:440px;line-height:1.7;margin-bottom:24px">
+        Conecta tu reporte de Looker Studio para visualizar riesgos por carrera, KPIs de nivelación por docente, distribución emocional y tendencias de satisfacción en tiempo real.
+      </div>
+      <button onclick="showModal('coordinator')" class="btn btn-primary btn-lg">
+        <i class="fas fa-link"></i> Conectar Looker Studio
+      </button>
+      <div style="margin-top:20px;padding:14px 18px;background:#fff;border:1px solid #E2E8F0;border-radius:10px;font-size:12px;color:#64748B;text-align:left;max-width:460px">
+        <div style="font-weight:700;margin-bottom:6px;color:#0F172A">📊 Datos disponibles en tu BD para Looker:</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;line-height:1.8">
+          <span>✓ Índice de nivelación</span><span>✓ Índice de comprensión</span>
+          <span>✓ Índice de atención</span><span>✓ Coherencia emocional</span>
+          <span>✓ Distribución emocional</span><span>✓ Riesgo por estudiante</span>
+          <span>✓ Sentimiento NLP</span><span>✓ Tendencia temporal</span>
+        </div>
+      </div>
+    </div>
+    <iframe id="iframe-coordinator" style="display:none;width:100%;height:680px;border:none"
+      allowfullscreen sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+      onload="iframeOk('coordinator')" onerror="iframeErr('coordinator')"></iframe>
+  </div>
+</div>
+
+{% include '_looker_modal.html' %}
+<script src="/static/js/looker.js"></script>
+<script src="/static/js/coordinator.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => autoload('coordinator'));</script>
+{% endblock %}

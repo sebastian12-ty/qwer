@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Nueva Encuesta{% endblock %}
+{% block page_title %}Crear Nueva Encuesta{% endblock %}
+{% block content %}
+<div style="max-width:560px">
+  <div class="card">
+    <div class="card-body-pad">
+      <div style="margin-bottom:24px">
+        <div style="font-size:16px;font-weight:700;margin-bottom:4px">Nueva Encuesta de Clase</div>
+        <div style="font-size:13px;color:#64748B">Se generará un código QR único para que tus estudiantes accedan.</div>
+      </div>
+      <form id="nuevaEncuestaForm">
+        <div class="form-group">
+          <label class="form-label">Título de la encuesta</label>
+          <input type="text" id="titulo" class="form-control" placeholder="Ej: Clase 5 — Árboles Binarios" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Curso</label>
+          <select id="course_id" class="form-control" required>
+            <option value="">Selecciona un curso</option>
+            <option value="1">CS101 — Algoritmos y Estructuras de Datos</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary w-full btn-lg">
+          <i class="fas fa-qrcode"></i> Generar Encuesta y QR
+        </button>
+      </form>
+      <div id="qrResult" style="display:none;margin-top:24px;text-align:center;padding:20px;background:#F8FAFC;border-radius:12px">
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px">Encuesta creada</div>
+        <div style="font-size:12px;color:#64748B;margin-bottom:12px">Comparte este código con tus estudiantes</div>
+        <div id="qrCode" style="font-size:36px;font-weight:800;letter-spacing:4px;color:#4F46E5;background:#EEF2FF;padding:16px;border-radius:10px;margin-bottom:12px"></div>
+        <a id="qrLink" href="#" class="btn btn-outline btn-sm" target="_blank"><i class="fas fa-external-link-alt"></i> Abrir encuesta</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/teacher_dashboard.js"></script>{% endblock %}
